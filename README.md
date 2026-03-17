@@ -7,7 +7,43 @@ This repository is a prototype and a stab at an initial L5Sound Library
 ## Documents
 
 - [Feature Mapping](featuremap.md): Processing Sound capabilities mapped to Love2D primitives.
-- [API Draft](api.md): proposed L5sound class/method surface.
+- [API Draft](api.md): proposed L5sound class/method surface
+
+# L5sound Prototype Usage Guide
+
+L5sound is a Processing-style sound library for L5 (Lua + Love2D). It's designed to be dropped alongside L5.lua as a single file module.
+
+## Installation
+
+1. Copy `l5sound.lua` to your L5 project directory (same level as `L5.lua`)
+2. Require it at the top of your sketch: `local Sound = require("l5sound")`
+
+## Basic Usage
+
+### Playing a Sound File
+
+```lua
+require("L5")
+local Sound = require("l5sound")
+
+local backgroundMusic
+
+function setup()
+  size(400, 300)
+  -- Load and play a sound file
+  backgroundMusic = Sound.SoundFile("path/to/your/sound.wav", "stream")
+  backgroundMusic:play()
+end
+
+function draw()
+  background(100)
+  
+  if backgroundMusic:isPlaying() then
+    text("Now Playing", 20, 20)
+  end
+end
+```
+.
 
 ## Implementation Plan
 
