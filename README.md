@@ -18,7 +18,7 @@ L5sound is a Processing-style sound library for L5 (Lua + Love2D). It's designed
 
 ### Method 1: Import l5sound into your L5 project
 
-1. Copy `l5sound.lua` to your L5 project directory (same level as `L5.lua`)
+1. Copy `l5sound.lua` [here](https://github.com/hmyam6090-lab/Initial-L5-Sound-Prototype/blob/main/L5-starter/L5sound.lua) to your L5 project directory (same level as `L5.lua`)
 2. Require it at the top of your sketch: `local Sound = require("l5sound")`
 
 ### Method 2: Fork the repo and work!
