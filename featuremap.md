@@ -1,8 +1,8 @@
 # L5sound Feature Map (Processing Sound → Love2D)
 
-This table is a markdown conversion from my research mapped out in Google Sheet here: 
+### This table is a markdown summary from my research mapped out (more specifically) in this Google Sheet here: 
 
-[Google Sheet FeatureMap](https://docs.google.com/spreadsheets/d/1tSDe68z31HpRSzVXrHaMLOCtlETNMTz_6bTxoy2Cocg/edit?usp=sharing)
+## [Google Sheet FeatureMap](https://docs.google.com/spreadsheets/d/1tSDe68z31HpRSzVXrHaMLOCtlETNMTz_6bTxoy2Cocg/edit?usp=sharing)
 
 | Processing Sound | Processing Notes | Love2D Implementation | Love2D Notes | Status |
 |---|---|---|---|---|
