@@ -6,7 +6,8 @@ This repository is a prototype and a stab at an initial L5Sound Library
 
 ## Documents
 
-- [Feature Mapping](featuremap.md): Processing Sound capabilities mapped to Love2D primitives.
+- [Feature Mapping](featuremap.md): Processing Sound capabilities mapped to Love2D primitives on markdown table
+- [Feature Map Google Sheets](featuremap.md): A Google Sheets Document to visualize the feature mapping bettter
 - [API Draft](api.md): proposed L5sound class/method surface
 
 # L5sound Prototype Usage Guide
@@ -15,8 +16,14 @@ L5sound is a Processing-style sound library for L5 (Lua + Love2D). It's designed
 
 ## Installation
 
+### Method 1: Import l5sound into your L5 project
+
 1. Copy `l5sound.lua` to your L5 project directory (same level as `L5.lua`)
 2. Require it at the top of your sketch: `local Sound = require("l5sound")`
+
+### Method 2: Fork the repo and work!
+
+This repository comes with a copy of the L5Starter along with the prototype l5sound library!
 
 ## Basic Usage
 
@@ -43,7 +50,36 @@ function draw()
   end
 end
 ```
-.
+
+### Making a AudioSample (Sine Wave)
+
+```lua
+require("L5")
+local Sound = require("l5sound")
+
+function setup()
+  size(640, 360)
+  background(255)
+
+  -- Create an array and manually write a single sine wave oscillation into it. 
+  local resolution = 1000
+  local sinewave = {}
+  for i = 1, resolution do 
+    sinewave[i] = math.sin(2 * math.pi * i / resolution )
+  end
+  
+  -- Create the audiosample based on the data, set framerate to play 200 oscillations/second
+  sample = Sound.AudioSample(sinewave, 200 * resolution)
+  
+  -- Play the sample in a loop (but don't make it too loud)
+  sample:amp(0.2)
+  sample:loop(true)
+end
+
+function draw()
+
+end
+```
 
 ## Implementation Plan
 
