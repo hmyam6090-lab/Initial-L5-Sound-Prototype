@@ -1,0 +1,123 @@
+Processing		Love2D		Comparison
+Processing Sound Library Functions/Features		Implementations via Love2D Features		
+				
+Processing Sound Feat/Functions	Notes	Possible Implementations via Love2D	Notes	
+Effects				
+AllPass				
+gain()		Source:setFilter()	Source:setFilter( settings ) in Love2D currently only supports three basic filters: HighPass, LowPass, and BandPass in a very limited way. AllPass is not one of the supported filters currently. However, I've recently found this LOVE2D sound processing library that has support for AllPass and more customization for BandPass, HighPass and LowPass https://love2d.org/forums/viewtopic.php?t=82944.	External Libraries/More Complex
+process()				External Libraries/More Complex
+stop()				External Libraries/More Complex
+BandPass				
+bw()	Processing’s filters are more user-friendly (named classes with freq(), res()). In L5sound we would likely create analogous classes (e.g. L5.LowPass), but internally call source:setFilter({type="lowpass", ...}). The mapping of parameters is not one-to-one (Love uses filter gains rather than direct Q factor), so some translation logic is needed. AllPass (phase shift) has no direct equivalent; could be omitted or simulated by combining delays.	Source:setFilter()	Source:setFilter( settings ) in Love2D seems to only supports three basic filters: HighPass, LowPass, and BandPass in a very limited way. You can only pass the volume, highgain and lowgain values through the "settings" table allowing little control. Researching https://love2d.org/forums/viewtopic.php?t=82944 for more support to achieve feature parity	Needs Love2D Implementation
+freq()				Needs Love2D Implementation
+process()				Needs Love2D Implementation
+res()				Needs Love2D Implementation
+set()				Needs Love2D Implementation
+stop()				Needs Love2D Implementation
+Delay				
+feedback()	Some Processing parameters may not exactly match Love’s (e.g. Love’s reverb has roomSize, damp, tilt etc.). But overall, core features exist.	love.audio.setEffect()	Delay (called echo in LOVE2D) is one of the built in effects with a good deal of support. you can define effects with love.audio.setEffect(name, {type = <EffectType>, ...}) and apply them to sources with source:setEffect(name) and with even more customization parameters than Processing Sound. There's also this example of ModularLove, a port of ModularPlay that has some great examples of these effects: https://github.com/orllewin/love2d_modular_love?tab=readme-ov-file	Direct Wrap
+process()				Direct Wrap
+set()				Direct Wrap
+stop()				Direct Wrap
+time()				Direct Wrap
+HighPass				
+freq()	Similar to BandPass	Source:setFilter()	Similar to BandPass	Needs Love2D Implementation
+process()				Needs Love2D Implementation
+res()				Needs Love2D Implementation
+set()				Needs Love2D Implementation
+stop()				Needs Love2D Implementation
+LowPass				
+freq()	Similar to BandPass	Source:setFilter()	Similar to BandPass	Needs Love2D Implementation
+process()				Needs Love2D Implementation
+res()				Needs Love2D Implementation
+set()				Needs Love2D Implementation
+stop()				Needs Love2D Implementation
+Reverb				
+damp()	Similar to Delay	love.audio.setEffect()	Reverb is similar to Delay (or echo in LOVE2D) in that it also has a good deal of support already within Love2D. Although the exact implementation isn't the same between Processing and Love2D, I believe a feature-parity implementation is achieveable considering the amount of customization supported	Direct Wrap
+process()				Direct Wrap
+room()				Direct Wrap
+stop()				Direct Wrap
+wet()				Direct Wrap
+Analysis				
+Amplitude				
+analyze()		SoundData:getSample()	Maybe by computing RMS from the sample buffer obtained using SoundData:getSample()	External Libraries/More Complex
+input()	Set input to analyze	Storing some kind of reference to Source/SoundData	There could be three possible types of sources in L5. Native Love2D has SoundFile, which we can access the sound data via Decoder.read(). There's also the Oscillators/Noise that we custom implement and finally there's the recording input from RecordingDevices, which gives us the PCM data via RecordingDevice:getData( )	External Libraries/More Complex
+BeatDetector				
+input()		Storing some kind of reference to Source/SoundData		External Libraries/More Complex
+isBeat()		Custom implementation? or possibly a library	possible references: There's this discussion in 2013 about an beat detection algorithm in Love2D https://love2d.org/forums/viewtopic.php?t=35986 and this one in 2016: https://love2d.org/forums/viewtopic.php?t=82210	External Libraries/More Complex
+sensitivity()		Adjust detection threshold in our custom implementation		External Libraries/More Complex
+FFT				
+analyzeSample()			lua-fft library. https://github.com/h4rm/luafft. We might need to implement some sort of conversion? since luafft expects that the audio data be given as complex values	External Libraries/More Complex
+analyze()			same as above	External Libraries/More Complex
+input()		Storing some kind of reference to Source/SoundData		External Libraries/More Complex
+PitchDetector				
+analyze()		SoundData:getSample()		External Libraries/More Complex
+input()		Storing some kind of reference to Source/SoundData		External Libraries/More Complex
+Waveform 				
+analyze()		SoundData:getSample()	seems simple enough to return a copy of PCM samples.	Needs Love2D Implementation
+input()		Storing some kind of reference to Source/SoundData		External Libraries/More Complex
+I/O				
+AudioIn				
+amp()	Love can access the mic via something like RecordingDevice = love.audio.getRecordingDevices()[1] and RecordingDevice:start(). The audio comes in as PCM; you can pull data using device:getSoundData(). (This is an advanced feature of Love 11+.) In practice, L5sound could wrap the first microphone device as AudioIn, and feed its PCM into Love’s audio output or into analysis objects.	RecordingDevice:setVolume()	 While Love2d does store audio input device capable of recording sounds in Recording Device, we might need something like a wrapper implemented around Source. We then can use the methods available to Source to easily implement the features in Processing Sound, but that's only if we can get it to wrap nicely around Source in Love2d	Needs Love2D Implementation
+pan()		RecordingDevice:setPosition()		Needs Love2D Implementation
+play()		RecordingDevice:play()		Needs Love2D Implementation
+set()		Wrapper Function		Needs Love2D Implementation
+start()		RecordingDevice:start()		Needs Love2D Implementation
+stop()		RecordingDevice:stop()		Needs Love2D Implementation
+MultiChannel				
+activeChannel()	although we can access the recording devices via love.audio.getRecordingDevices(). Love2D 11.5 currently does not support access to the playback devices. There's been discussion about it going far back to 2022 witht this issue https://github.com/love2d/love/issues/1537 and since then it's been implemented and merged but only to the 12.0ver which isn't officially released yet in this PR https://github.com/love2d/love/pull/1805.		We can possibly look at the implementation of access to playback devices in the mentioned PR for reference and implement our own version of it or wrap around/implement in a more native Processinglike way	External Libraries/More Complex
+availableChannels()				External Libraries/More Complex
+usePortAudio()				External Libraries/More Complex
+Sampling				
+AudioSample		SoundData		
+amp()		Source:setVolume()		Direct Wrap
+channels()		SoundData:getChannelCount()		Direct Wrap
+cueFrame()	cueFrame() is in frames	Source:seek()	Source:seek is in seconds	Needs Love2D Implementation
+cue()	cue() is in seconds	Source:seek()	Source:seek is in seconds	Needs Love2D Implementation
+duration()		Source:getDuration()		Direct Wrap
+frames()	duration() in frames	Source:getDuration()	It seems Love2D doesn't directly support getDuration() in frames but I think it's relatively straightforward to figure that out with a known dt	Needs Love2D Implementation
+jumpFrame()		Source:seek()	Difference between the source:seek() used here to implement jumpFrame() and jump() is source:seek() sets the currently playing position of the Source. With the queueable source type, this method can only work on the currently playing buffer.	Direct Wrap
+jump()		Source:seek()		Direct Wrap
+loop()	Starts the playback of the audiosample in a loop	Source:setLooping(true) + Source:play()	Source:setLooping(true) only sets the Source to be looping, but loop() in Processing.sound plays the audiosample as well	Needs Love2D Implementation
+pan()	pan() takes a range from -1 to 1	Source:setPosition()	Source:setPosition takes x, y, z coordinates	Needs Love2D Implementation
+pause()		Source:pause()		Direct Wrap
+percent()	Get current sound file playback position in percent.	Source:tell() + Source:duration()	Source:tell() returns how many seconds into the audiosample is the playback. Hence, an percent() implementation is just source:tell()/duration()	Needs Love2D Implementation
+playFor()	Starts the playback of the audiosample for the specified duration or to the end of the audiosample, whichever comes first.	love.timer() + Source:stop()	Maybe use love.timer() with Source:stop to emulate?	Needs Love2D Implementation
+play()		Source:play()		Direct Wrap
+positionFrame()		Source:tell() 	Frame version of percent()	Needs Love2D Implementation
+position()		Source:tell()		Direct Wrap
+rate()		Source:pitch()		Direct Wrap
+read()		SoundData:getSample()		Direct Wrap
+resize()		?	I haven't figured out a clean way to resize the AudioSample other than reconstructing it everytime?	External Libraries/More Complex
+sampleRate()		SoundData:getSampleRate()		Direct Wrap
+set()	Set multiple parameters at once.	Wrapper Function	There's no direct set() function in Love2D but set should be fairly straightforward to implement since it's basically a wrapper function	Needs Love2D Implementation
+stop()		Source:stop()		Direct Wrap
+write()		SoundData:setSample()		Direct Wrap
+SoundFile				
+amp()		Source:setVolume()		Direct Wrap
+channels()		SoundData:getChannelCount()		Direct Wrap
+cue()		Source:seek()	Note: source:seek() sets the currently playing position of the Source. With the queueable source type, this method can only work on the currently playing buffer.	Needs Love2D Implementation
+duration()		Source:getDuration()		Direct Wrap
+frames()		Source:getDuration()	same problem as frames() for AudioSample	Needs Love2D Implementation
+isPlaying()		Source:isPlaying()		Direct Wrap
+jump()		Source:seek()	Same note as cue() and AudioSample	Direct Wrap
+loop()		Source:setLooping(true) + Source:play()	Similar implementation as above	Needs Love2D Implementation
+pan()		Source:setPosition()	Similar implementation as above	Direct Wrap
+pause()		Source:pause()		Direct Wrap
+play()		Source:play()		Direct Wrap
+rate()		Source:pitch()		Direct Wrap
+removeFromCache()		removeFromCache()	Might have to implement our own removeFromCache(). I feel like it should be fairly easy? Just set the soundfile instance to nil and collectgarbage("collect") ?	Needs Lua Implementation
+Noise & Oscillators				
+Noise	Brown, Pink and WhiteNoise with amp(), pan(), play(), set(), stop()	Custom Love2D implementation 	While there are no built-in waveform generators. we can recreate these by generating sample data manually. For example, fill a SoundData buffer with samples of sin(2πft) like in this example https://gist.github.com/lee2sman/e18b9bfd7e8c2eeb279ceca76e74a3b5 or random Data for different noises	Needs Love2D Implementation
+Oscillators	Pulse, SawOsc, SinOsc, SqrOsc, TriOsc with amp(), freq(), pan(), play(), set(), stop()	Custom Love2D implementation	Mentioned above	Needs Love2D Implementation
+Envelopes				
+Env		Custom Love2D Implementation	There is also no Native Love2d Envelope, but I imagine one would implement it in L5 by modulating :setVolume() of a Source over time (e.g. using a table of values and a timer). This is straightforward in Lua. Essentially, L5sound’s Env.play() could start a coroutine or use LOVE’s timer to ramp volume.	Needs Love2D Implementation
+play()				Needs Love2D Implementation
+Configuration				
+Sound				
+inputDevice()		love.audio.getRecordingDevices()		Direct Wrap
+list()			easily implemented for recording using love.audio.getRecordingDevices() but currently not supported for playback()	Needs Lua Implementation
+outputDevice()			Implemented in Love2D 12.0 but haven't been officially released yet	Needs Lua Implementation
+sampleRate()		love.audio.getSampleRate()		Direct Wrap
+status()			no direct support in Love2D but lua has collectgarbage("count")	Needs Lua Implementation
+volume()		love.audio.setVolume()		Direct Wrap
